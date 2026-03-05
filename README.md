@@ -1,5 +1,5 @@
 # social-app
-
+Emiliano Prado
 ## Requirements
 
 - Node.js 18+ (recommended)
