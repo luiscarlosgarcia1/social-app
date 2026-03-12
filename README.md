@@ -1,12 +1,13 @@
 # social-app
 
-## Team Members
-Luis Garcia
-Emiliano Prado
-Josue Torres
+## Team Members and roles
+Luis Garcia: backend
+Emiliano Prado: frontend and backend
+Josue Torres: frontend 
+
 
 ## Requirements
-
+- React.js
 - Node.js 18+ (recommended)
 - npm (comes with Node.js)
 
@@ -20,6 +21,7 @@ npm -v
 
 ## Run Locally
 
+## Frontend
 1. Clone the repository and move into it.
 2. Install dependencies.
 3. Start the Vite development server.
@@ -31,6 +33,14 @@ cd social-app/app
 npm install
 npm run dev
 ```
+## Backend 
+1. Navigate to the server folder.
+2. Start the server.
+```bash
+cd social-app/server
+node index.js
+```
+✅ Visit `http://localhost:3000` — you should see `{"message":"Server is running"}`
 
 ## Project Description
 This project is a Tinder-style matching app for University of Texas Rio Grande Valley students.
