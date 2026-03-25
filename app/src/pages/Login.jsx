@@ -4,10 +4,11 @@ import { Link } from 'react-router-dom'
 function Login (){
     return (
         <div>
-        <form>
+        <form action="http://localhost:3000/login" method="POST">
             <div>
                 <input
                 type = "text" 
+                name="emailOrPhone"
                 placeholder="Email/Phone num"
                 required
                 />
@@ -16,6 +17,7 @@ function Login (){
             <div>
                 <input
                 type = "password"
+                name="password"
                 placeholder="Password"
                 required
                 />
