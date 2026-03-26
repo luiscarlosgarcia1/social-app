@@ -1,68 +1,104 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* 
+  This CSS file is designed to create a sleek and modern login page for our social media app. 
+  It features a dark background with a clean white card in the center, styled with UTRGV's signature orange color for accents. 
+  The layout is user-friendly, ensuring a great experience on desktop 
+*/
+/* Resetting defaults */
+* {
+  box-sizing: border-box;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
+html, body {
   margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #1a1a1a; /* Dark sleek background */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Centering everything */
+/* 1. This matches <div className="auth-page-container"> */
+.auth-page-container {
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* The White Card */
+/* 2. This matches <div className="auth-card"> */
+.auth-card {
+  background-color: white;
+  color: #333;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+.auth-card h2 {
+  margin: 0 0 10px 0;
+  color: #F05023; /* UTRGV Orange */
+  font-size: 28px;
+}
+
+.auth-card p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* Inputs */
+/* 3. This matches <div className="input-group"> in your JSX */
+.input-group {
+  margin-bottom: 15px; /* Adds space specifically between the rows */
+  text-align: left;    /* Optional: aligns the input boxes to the left */
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  margin: 8px 0;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+input:focus {
+  outline: none;
+  border-color: #F05023; /* Highlights orange when typing */
+}
+
+/* Button */
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #F05023;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 16px;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  margin-top: 15px;
+  transition: transform 0.2s, background-color 0.2s;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.login-btn:hover {
+  background-color: #d4451d;
+  transform: translateY(-2px); /* Tiny lift effect when hovering */
+}
+
+.footer-text {
+  margin-top: 25px;
+  font-size: 14px;
+}
+
+.footer-text a {
+  color: #F05023;
+  text-decoration: none;
+  font-weight: bold;
 }
