@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-
+import HandleSubmit from './SignUpAuth';
 function SignUp (){
     return (
         <div className="auth-page-container">
@@ -11,13 +11,14 @@ function SignUp (){
                 <h2>Join UTRGV Match</h2>
                 <p>Create an account to start finding partners</p>
 
-                <form className="auth-form">
+                <form className="auth-form" onSubmit={HandleSubmit}>
                     
                     {/* input-group: Adds space between each text box */}
                     <div className="input-group">
                         <input
                         type = "email"
                         placeholder="Email"
+                        name = "email"
                         required
                         />
                     </div>
@@ -26,6 +27,7 @@ function SignUp (){
                         <input 
                         type = "text"
                         placeholder="Full Name"
+                        name ="fullName"
                         required
                         />
                     </div>
@@ -34,6 +36,7 @@ function SignUp (){
                         <input 
                         type = "tel"
                         placeholder="Phone number"
+                        name = "phone"
                         required
                         />
                     </div>
@@ -42,6 +45,7 @@ function SignUp (){
                         <input 
                         type = "password"
                         placeholder = "Password"
+                        name = "password"
                         required
                         />
                     </div>
