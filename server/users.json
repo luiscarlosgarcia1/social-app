@@ -2,5 +2,14 @@
   {
     "emailOrPhone": "test@gmail.com",
     "password": "password123"
+  },
+  {
+    "password": "password123"
+  },
+  {
+    "email": "emiliano.prado01@utrgv.edu",
+    "fullName": "Emiliano Prado",
+    "phone": "000-000-0000",
+    "password": "qweasd"
   }
 ]

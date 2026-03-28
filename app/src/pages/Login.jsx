@@ -2,7 +2,7 @@
 
 //to check if its a phone num,email
 import { Link } from 'react-router-dom'
-
+import HandleSubmit from './Loginauth'
 function Login (){
     return (
         <div className="auth-page-container">
@@ -10,11 +10,11 @@ function Login (){
                 <h2>UTRGV Match</h2>
                 <p>Sign in to find your project partner</p>
 
-                <form className="auth-form" action="http://localhost:3000/login" method="POST">
+                <form className="auth-form" onSubmit={HandleSubmit}>
                     <div className="input-group">
                         <input
                         type = "text" 
-                        name="emailOrPhone"
+                        name="email"
                         placeholder="Email/Phone number"
                         required
                         />
