@@ -40,9 +40,10 @@ npm run dev
 2. Start the server.
 ```bash
 cd social-app/server
-node index.js
+npm install
+npm start
 ```
-✅ Visit `http://localhost:3000` — you should see `{"message":"Server is running"}`
+✅ Visit `http://localhost:3000` — you should see `{"message":"Server running"}`
 
 ## Project Description
 This project is a Tinder-style matching app for University of Texas Rio Grande Valley students.

@@ -1,0 +1,5 @@
+docs/
+tests/
+server/.local/
+server/*.db
+server/*.db-*
