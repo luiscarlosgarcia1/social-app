@@ -19,6 +19,25 @@ function findUserByEmail(db, email) {
   return row ? mapUserRow(row) : null
 }
 
+function findUserForLogin(db, email) {
+  const row = db
+    .prepare(`
+      SELECT id, email, full_name, phone, password
+      FROM users
+      WHERE email = ?
+    `)
+    .get(email)
+
+  if (!row) {
+    return null
+  }
+
+  return {
+    user: mapUserRow(row),
+    password: row.password,
+  }
+}
+
 function createUser(db, user) {
   const result = db
     .prepare(`
@@ -41,4 +60,5 @@ function createUser(db, user) {
 module.exports = {
   createUser,
   findUserByEmail,
+  findUserForLogin,
 }

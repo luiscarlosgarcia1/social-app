@@ -26,7 +26,26 @@ function validateRegistrationPayload(payload) {
   }
 }
 
+function validateLoginPayload(payload) {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    return { ok: false, code: 'VALIDATION_ERROR' }
+  }
+
+  if (!hasValue(payload.email) || !hasValue(payload.password)) {
+    return { ok: false, code: 'VALIDATION_ERROR' }
+  }
+
+  return {
+    ok: true,
+    value: {
+      email: normalizeEmail(payload.email),
+      password: payload.password,
+    },
+  }
+}
+
 module.exports = {
   normalizeEmail,
+  validateLoginPayload,
   validateRegistrationPayload,
 }

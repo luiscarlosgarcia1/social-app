@@ -1,5 +1,6 @@
 const express = require('express')
 const { initializeDatabase, resolveDbPath } = require('./db')
+const { loginUser } = require('./login-service')
 const { registerUser } = require('./register-service')
 
 function createApp(options = {}) {
@@ -27,14 +28,6 @@ function createApp(options = {}) {
     res.status(200).json({ message: 'Server running' })
   })
 
-  const notImplemented = (_req, res) => {
-    res.status(501).json({
-      ok: false,
-      code: 'NOT_IMPLEMENTED',
-      message: 'Auth flow is not implemented in phase one.',
-    })
-  }
-
   app.post('/register', (req, res) => {
     const result = registerUser(db, req.body)
 
@@ -52,7 +45,22 @@ function createApp(options = {}) {
     })
   })
 
-  app.post('/login', notImplemented)
+  app.post('/login', (req, res) => {
+    const result = loginUser(db, req.body)
+
+    if (!result.ok) {
+      const status = result.code === 'INVALID_CREDENTIALS' ? 401 : 400
+      return res.status(status).json({
+        ok: false,
+        code: result.code,
+      })
+    }
+
+    return res.status(200).json({
+      ok: true,
+      user: result.user,
+    })
+  })
 
   app.use((error, _req, res, next) => {
     if (error instanceof SyntaxError && error.status === 400 && 'body' in error) {
