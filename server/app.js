@@ -1,7 +1,6 @@
 const express = require('express')
+const { loginUser, registerUser } = require('./auth-service')
 const { initializeDatabase, resolveDbPath } = require('./db')
-const { loginUser } = require('./login-service')
-const { registerUser } = require('./register-service')
 
 function createApp(options = {}) {
   const dbPath = resolveDbPath(options.dbPath)

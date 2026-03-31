@@ -7,19 +7,11 @@ function mapUserRow(row) {
   }
 }
 
-function findUserByEmail(db, email) {
-  const row = db
-    .prepare(`
-      SELECT id, email, full_name, phone
-      FROM users
-      WHERE email = ?
-    `)
-    .get(email)
-
-  return row ? mapUserRow(row) : null
+function isUniqueEmailViolation(error) {
+  return error && typeof error.code === 'string' && error.code.startsWith('SQLITE_CONSTRAINT')
 }
 
-function findUserForLogin(db, email) {
+function findUserWithPasswordByEmail(db, email) {
   const row = db
     .prepare(`
       SELECT id, email, full_name, phone, password
@@ -39,26 +31,36 @@ function findUserForLogin(db, email) {
 }
 
 function createUser(db, user) {
-  const result = db
-    .prepare(`
-      INSERT INTO users (email, full_name, phone, password)
-      VALUES (@email, @fullName, @phone, @password)
-    `)
-    .run(user)
+  try {
+    const result = db
+      .prepare(`
+        INSERT INTO users (email, full_name, phone, password)
+        VALUES (@email, @fullName, @phone, @password)
+      `)
+      .run(user)
 
-  const row = db
-    .prepare(`
-      SELECT id, email, full_name, phone
-      FROM users
-      WHERE id = ?
-    `)
-    .get(result.lastInsertRowid)
+    const row = db
+      .prepare(`
+        SELECT id, email, full_name, phone
+        FROM users
+        WHERE id = ?
+      `)
+      .get(result.lastInsertRowid)
 
-  return mapUserRow(row)
+    return {
+      ok: true,
+      user: mapUserRow(row),
+    }
+  } catch (error) {
+    if (isUniqueEmailViolation(error)) {
+      return { ok: false, code: 'EMAIL_TAKEN' }
+    }
+
+    throw error
+  }
 }
 
 module.exports = {
   createUser,
-  findUserByEmail,
-  findUserForLogin,
+  findUserWithPasswordByEmail,
 }
