@@ -1,6 +1,6 @@
-//just using text we should add something in the backend
+// Login stays email-only so the UI matches the backend contract.
 
-//to check if its a phone num,email
+// This form submits the existing email + password payload to /login.
 import { Link } from 'react-router-dom'
 import HandleSubmit from './Loginauth'
 function Login (){
@@ -15,7 +15,7 @@ function Login (){
                         <input
                         type = "text" 
                         name="email"
-                        placeholder="Email/Phone number"
+                        placeholder="Email"
                         required
                         />
                     </div>
