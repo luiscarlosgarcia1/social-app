@@ -1,5 +1,6 @@
 const express = require('express')
 const { initializeDatabase, resolveDbPath } = require('./db')
+const { registerUser } = require('./register-service')
 
 function createApp(options = {}) {
   const dbPath = resolveDbPath(options.dbPath)
@@ -34,8 +35,35 @@ function createApp(options = {}) {
     })
   }
 
-  app.post('/register', notImplemented)
+  app.post('/register', (req, res) => {
+    const result = registerUser(db, req.body)
+
+    if (!result.ok) {
+      const status = result.code === 'EMAIL_TAKEN' ? 409 : 400
+      return res.status(status).json({
+        ok: false,
+        code: result.code,
+      })
+    }
+
+    return res.status(201).json({
+      ok: true,
+      user: result.user,
+    })
+  })
+
   app.post('/login', notImplemented)
+
+  app.use((error, _req, res, next) => {
+    if (error instanceof SyntaxError && error.status === 400 && 'body' in error) {
+      return res.status(400).json({
+        ok: false,
+        code: 'VALIDATION_ERROR',
+      })
+    }
+
+    return next(error)
+  })
 
   app.use((_req, res) => {
     res.status(404).json({ ok: false, code: 'NOT_FOUND' })
