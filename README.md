@@ -1,5 +1,13 @@
 # social-app
 
+## Collaboration
+
+Credits:
+
+- Luis Garcia - backend
+- Emiliano Prado - frontend and backend
+- Josue Torres - frontend
+
 ## Project Overview
 
 `social-app` is a Tinder-style matching app for University of Texas Rio Grande Valley students.
@@ -154,20 +162,6 @@ Current status note:
 
 - The frontend still logs the backend response in the browser console from `Loginauth.jsx` and `SignUpAuth.jsx`
 - Implementing on-screen error handling and success branching is the next logical frontend task
-
-## Collaboration
-
-Contributing:
-
-- Keep frontend and backend changes grounded in the existing JSON auth contract unless the team agrees to change it
-- Prefer small, focused changes that preserve the current routes: `POST /register` and `POST /login`
-- Validate local changes by running the frontend and backend together before handing work off
-
-Credits:
-
-- Luis Garcia - backend
-- Emiliano Prado - frontend and backend
-- Josue Torres - frontend
 
 ## Sprint Plan
 
