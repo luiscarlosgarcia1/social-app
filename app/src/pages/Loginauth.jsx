@@ -11,6 +11,15 @@ async function HandleSubmit(event) {
     try{
         let data = await response.json()
         console.log(data)
+        debugger
+        if (data.ok){
+            if(data.user.role === 'builder'){
+                window.location.href = '/BuilderProfile'
+            } else {
+                window.location.href = '/IdeatorProfile'
+            }
+
+        }
     } catch (error){
         console.log(error)
     }

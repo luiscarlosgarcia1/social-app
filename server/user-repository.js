@@ -4,6 +4,7 @@ function mapUserRow(row) {
     email: row.email,
     fullName: row.full_name,
     phone: row.phone,
+    role: row.role
   }
 }
 
@@ -14,7 +15,7 @@ function isUniqueEmailViolation(error) {
 function findUserWithPasswordByEmail(db, email) {
   const row = db
     .prepare(`
-      SELECT id, email, full_name, phone, password
+      SELECT id, email, full_name, phone, password, role
       FROM users
       WHERE email = ?
     `)
@@ -34,8 +35,8 @@ function createUser(db, user) {
   try {
     const result = db
       .prepare(`
-        INSERT INTO users (email, full_name, phone, password)
-        VALUES (@email, @fullName, @phone, @password)
+        INSERT INTO users (email, full_name, phone, password, role)
+        VALUES (@email, @fullName, @phone, @password, @role)
       `)
       .run(user)
 

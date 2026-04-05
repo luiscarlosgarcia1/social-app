@@ -19,6 +19,7 @@ function initializeDatabase(dbPath) {
       email TEXT NOT NULL UNIQUE,
       full_name TEXT NOT NULL,
       phone TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'builder',
       password TEXT NOT NULL,
       created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     )

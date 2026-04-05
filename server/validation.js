@@ -11,7 +11,7 @@ function validateRegistrationPayload(payload) {
     return { ok: false, code: 'VALIDATION_ERROR' }
   }
 
-  if (!hasValue(payload.email) || !hasValue(payload.fullName) || !hasValue(payload.phone) || !hasValue(payload.password)) {
+  if (!hasValue(payload.email) || !hasValue(payload.fullName) || !hasValue(payload.phone) || !hasValue(payload.password) || !hasValue(payload.role)) {
     return { ok: false, code: 'VALIDATION_ERROR' }
   }
 
@@ -22,6 +22,7 @@ function validateRegistrationPayload(payload) {
       fullName: payload.fullName,
       phone: payload.phone,
       password: payload.password,
+      role: payload.role,
     },
   }
 }
