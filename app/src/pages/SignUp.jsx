@@ -50,6 +50,15 @@ function SignUp (){
                         />
                     </div>
 
+                    {/*DROPDOWN ADDED TO SELECT BUISNES OR STUDENT */}
+                    <div className="input-group">
+                        <select name="userType" required className="auth-input">
+                            <option value="">I am a...</option>
+                            <option value="student">UTRGV Student</option>
+                            <option value="business">Business / Partner</option>
+                        </select>
+                    </div>
+
                     {/* login-btn: Applies the UTRGV Orange styling */}
                     <button type="submit" className="login-btn">
                         Create Account
