@@ -4,7 +4,7 @@ async function HandleSubmit(event){
     let fullName = event.target.fullName.value
     let phone = event.target.phone.value
     let password = event.target.password.value
-    let role = 'builder'
+    let role = event.target.userType.value
     let data = JSON.stringify ({ email, fullName, phone, password, role })
     let response = await fetch('http://localhost:3000/register',{
         method: 'POST',

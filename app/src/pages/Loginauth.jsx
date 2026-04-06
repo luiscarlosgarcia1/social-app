@@ -13,10 +13,10 @@ async function HandleSubmit(event) {
         console.log(data)
         debugger
         if (data.ok){
-            if(data.user.role === 'builder'){
-                window.location.href = '/BuilderProfile'
+            if(data.user.role === 'business'){
+                window.location.href = '/BusinessProfile'
             } else {
-                window.location.href = '/IdeatorProfile'
+                window.location.href = '/StudentProfile'
             }
 
         }
