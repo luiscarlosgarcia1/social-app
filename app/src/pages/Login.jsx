@@ -1,9 +1,34 @@
-// Login stays email-only so the UI matches the backend contract.
-
-// This form submits the existing email + password payload to /login.
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import HandleSubmit from './Loginauth'
-function Login (){
+
+function Login() {
+    const [error, setError] = useState('')
+
+    async function HandleSubmit(event) {
+        event.preventDefault()
+        setError('')
+        const email = event.target.email.value
+        const password = event.target.password.value
+        try {
+            const response = await fetch('http://localhost:3000/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            })
+            const data = await response.json()
+            if (data.ok) {
+                localStorage.setItem('user', JSON.stringify(data.user))
+                window.location.href = data.user.role === 'business' ? '/BusinessProfile' : '/StudentProfile'
+            } else if (data.code === 'INVALID_CREDENTIALS') {
+                setError('Invalid email or password.')
+            } else {
+                setError('Something went wrong. Please try again.')
+            }
+        } catch {
+            setError('Could not reach the server. Make sure it is running.')
+        }
+    }
+
     return (
         <div className="auth-page-container">
             <div className="auth-card">
@@ -29,6 +54,7 @@ function Login (){
                         />
                     </div>
 
+                    {error && <p style={{ color: '#e53e3e', marginTop: '8px', fontSize: '0.9rem' }}>{error}</p>}
                     <button type="submit" className="login-btn">
                         Login
                     </button>

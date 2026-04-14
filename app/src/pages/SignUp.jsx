@@ -1,6 +1,36 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import HandleSubmit from './SignUpAuth';
-function SignUp (){
+
+function SignUp() {
+    const [error, setError] = useState('')
+
+    async function HandleSubmit(event) {
+        event.preventDefault()
+        setError('')
+        const email = event.target.email.value
+        const fullName = event.target.fullName.value
+        const phone = event.target.phone.value
+        const password = event.target.password.value
+        const role = event.target.userType.value
+        try {
+            const response = await fetch('http://localhost:3000/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, fullName, phone, password, role }),
+            })
+            const result = await response.json()
+            if (result.ok) {
+                window.location.href = '/'
+            } else if (result.code === 'EMAIL_TAKEN') {
+                setError('That email is already registered.')
+            } else {
+                setError('Something went wrong. Please try again.')
+            }
+        } catch {
+            setError('Could not reach the server. Make sure it is running.')
+        }
+    }
+
     return (
         <div className="auth-page-container">
             {/* auth-page-container: Centers the card on the screen */}
@@ -59,6 +89,7 @@ function SignUp (){
                         </select>
                     </div>
 
+                    {error && <p style={{ color: '#e53e3e', marginTop: '8px', fontSize: '0.9rem' }}>{error}</p>}
                     {/* login-btn: Applies the UTRGV Orange styling */}
                     <button type="submit" className="login-btn">
                         Create Account
