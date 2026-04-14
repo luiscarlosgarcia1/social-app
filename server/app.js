@@ -1,5 +1,6 @@
 const express = require('express')
 const { loginUser, registerUser } = require('./auth-service')
+const { upsertStudentProfile, upsertBusinessProfile } = require('./profile-repository')
 const { initializeDatabase, resolveDbPath } = require('./db')
 
 function createApp(options = {}) {
@@ -59,6 +60,24 @@ function createApp(options = {}) {
       ok: true,
       user: result.user,
     })
+  })
+
+  app.post('/profile/student', (req, res) => {
+    const { userId, major, classification, bio } = req.body
+    if (!userId || !major || !classification) {
+      return res.status(400).json({ ok: false, code: 'VALIDATION_ERROR' })
+    }
+    const result = upsertStudentProfile(db, { userId, major, classification, bio })
+    return res.status(200).json(result)
+  })
+
+  app.post('/profile/business', (req, res) => {
+    const { userId, projectName, industry, needs } = req.body
+    if (!userId || !projectName || !industry) {
+      return res.status(400).json({ ok: false, code: 'VALIDATION_ERROR' })
+    }
+    const result = upsertBusinessProfile(db, { userId, projectName, industry, needs })
+    return res.status(200).json(result)
   })
 
   app.use((error, _req, res, next) => {

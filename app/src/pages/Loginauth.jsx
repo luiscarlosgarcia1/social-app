@@ -13,6 +13,7 @@ async function HandleSubmit(event) {
         console.log(data)
         debugger
         if (data.ok){
+            localStorage.setItem('user', JSON.stringify(data.user))
             if(data.user.role === 'business'){
                 window.location.href = '/BusinessProfile'
             } else {

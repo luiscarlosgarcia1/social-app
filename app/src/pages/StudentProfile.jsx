@@ -1,13 +1,29 @@
 import React from 'react';
 
+async function handleSubmit(event) {
+    event.preventDefault();
+    const user = JSON.parse(localStorage.getItem('user'))
+    const major = event.target.major.value;
+    const classification = event.target.classification.value;
+    const bio = event.target.bio.value;
+
+    const response = await fetch('http://localhost:3000/profile/student', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id, major, classification, bio }),
+    })
+    const data = await response.json()
+    console.log(data)
+}
+
 function StudentProfile() {
     return (
         <div className="auth-page-container">
             <div className="auth-card">
                 <h2>Student Profile</h2>
                 <p>Tell us a bit more about your academic background</p>
-                
-                <form className="auth-form">
+
+                <form className="auth-form" onSubmit={handleSubmit}>
                     <div className="input-group">
                         <input type="text" name="major" placeholder="Major (e.g. Computer Science)" required />
                     </div>
