@@ -115,9 +115,35 @@ Helpful backend files:
 
 ## Next Steps
 
-The backend already returns stable JSON response codes that the frontend can use for branching. The next frontend step is to stop only logging the result in the browser console and start showing UI feedback or navigating based on the returned code.
+### Already implemented
 
-Current backend response contract:
+- User registration (email, password, phone number, full name, role)
+- User login with role-based redirect
+- Password hashing
+- SQLite user table with schema
+- Business profile creation (frontend form + backend persistence)
+- Student profile creation (frontend form + backend persistence)
+
+### Builder profile fields to implement
+
+- Bio
+- Links
+- Images
+- Experience
+- Skills
+- Degree
+- School year (education level)
+
+### Inventor profile fields to implement
+
+- Bio
+- Project/idea concept
+- What kind of builders they're looking for (frontend, backend, ML, etc.)
+- Their background (business student, designer, etc.)
+- Timeline / how serious they are
+- Links (pitch deck, Figma, etc.)
+
+### Backend response contract (reference)
 
 - Register success: `201` with `{ ok: true, user }`
 - Register validation failure: `400` with `{ ok: false, code: 'VALIDATION_ERROR' }`
@@ -125,43 +151,6 @@ Current backend response contract:
 - Login success: `200` with `{ ok: true, user }`
 - Login validation failure: `400` with `{ ok: false, code: 'VALIDATION_ERROR' }`
 - Login invalid credentials: `401` with `{ ok: false, code: 'INVALID_CREDENTIALS' }`
-
-Basic branching pattern:
-
-```js
-const response = await fetch('http://localhost:3000/login', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ email, password }),
-})
-
-const data = await response.json()
-
-if (response.ok && data.ok) {
-  // success path
-  // example: navigate to the next page or store the returned user
-} else if (data.code === 'INVALID_CREDENTIALS') {
-  // show login error
-} else if (data.code === 'VALIDATION_ERROR') {
-  // prompt the user to complete required fields
-} else if (data.code === 'EMAIL_TAKEN') {
-  // show signup duplicate-email message
-} else {
-  // fallback for unexpected errors
-}
-```
-
-Suggested frontend branches:
-
-- `EMAIL_TAKEN` -> show a signup message like "That email is already in use."
-- `INVALID_CREDENTIALS` -> show a login message like "Invalid email or password."
-- `VALIDATION_ERROR` -> show a message asking the user to complete all required fields
-- `ok: true` -> navigate, update local state, or render success feedback with the returned `user`
-
-Current status note:
-
-- The frontend still logs the backend response in the browser console from `Loginauth.jsx` and `SignUpAuth.jsx`
-- Implementing on-screen error handling and success branching is the next logical frontend task
 
 ## Sprint Plan
 
@@ -175,3 +164,16 @@ Current status note:
 - Sprint 8: Open DMs for matched users
 - Sprint 9: Improve UX and fix core bugs
 - Sprint 10: Final testing, docs, and release prep
+
+## User Stories
+
+1. As a user, I want to see a home feed of profiles matched to my role so that I can browse potential collaborators.
+2. As an inventor, I want to specify what kind of builders I need (frontend, backend, ML, etc.) so that my profile attracts the most relevant collaborators.
+3. As a registered user, I want to log in with my email and password so that I can access my profile and matches.
+4. As a user, I want to swipe right on a profile I'm interested in so that I can express that I want to connect.
+5. As a builder, I want to create a profile with my bio, skills, degree, and school year so that inventors can evaluate whether I'm a good fit for their project.
+6. As a user, I want to be notified when another user and I have both swiped right so that I know we have a mutual match.
+7. As a student, I want to register with my email, name, phone number, and password so that I can create an account on the platform.
+8. As a user, I want to swipe left on a profile I'm not interested in so that I can move on to the next one.
+9. As an inventor, I want to create a profile with my project idea, the type of builders I need, and my background so that relevant students can find and consider working with me.
+10. As a matched user, I want to send direct messages to my match so that we can discuss the project in more detail.
