@@ -1,9 +1,11 @@
+const bcrypt = require('bcryptjs')
+
 function preparePasswordForStorage(password) {
-  return password
+  return bcrypt.hashSync(password, 10)
 }
 
 function comparePassword(submittedPassword, storedPassword) {
-  return submittedPassword === storedPassword
+  return bcrypt.compareSync(submittedPassword, storedPassword)
 }
 
 module.exports = {

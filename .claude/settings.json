@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(node -e \"const { initializeDatabase, resolveDbPath } = require\\('./db'\\); const db = initializeDatabase\\(resolveDbPath\\(\\)\\); const result = db.prepare\\('DELETE FROM users'\\).run\\(\\); console.log\\('Deleted rows:', result.changes\\);\")"
+    ]
+  }
+}
