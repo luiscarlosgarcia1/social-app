@@ -36,3 +36,6 @@ app/dist-ssr/
 server/.local/
 server/*.db
 server/*.db-*
+
+# Claude Code local config
+.claude/
