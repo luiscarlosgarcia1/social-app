@@ -3,6 +3,7 @@ import Login from './pages/Login'
 import SignUp from './pages/SignUp'
 import BusinessProfile from "./pages/BusinessProfile"
 import StudentProfile from "./pages/StudentProfile"
+import Home from "./pages/Home"
 function App() {
   return (
     <BrowserRouter>
@@ -11,6 +12,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/BusinessProfile" element= {<BusinessProfile/>} />
         <Route path="/StudentProfile" element= {<StudentProfile/>} />
+        <Route path="/home" element={<Home />} />
       </Routes>
     </BrowserRouter>
   )
