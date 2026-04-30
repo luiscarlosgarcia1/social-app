@@ -102,3 +102,7 @@ input:focus {
   text-decoration: none;
   font-weight: bold;
 }
+.nav-item:hover {
+    background-color: #fff5f2;
+    color: #F05023 !important;
+}
