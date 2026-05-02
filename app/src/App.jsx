@@ -4,6 +4,8 @@ import SignUp from './pages/SignUp'
 import BusinessProfile from "./pages/BusinessProfile"
 import StudentProfile from "./pages/StudentProfile"
 import Home from "./pages/Home"
+import Matches from './pages/Matches'
+import Messages from './pages/Messages'
 function App() {
   return (
     <BrowserRouter>
@@ -13,6 +15,8 @@ function App() {
         <Route path="/BusinessProfile" element= {<BusinessProfile/>} />
         <Route path="/StudentProfile" element= {<StudentProfile/>} />
         <Route path="/home" element={<Home />} />
+        <Route path="/matches" element={<Matches />} />
+        <Route path="/messages" element={<Messages />} />
       </Routes>
     </BrowserRouter>
   )

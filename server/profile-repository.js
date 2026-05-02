@@ -24,7 +24,31 @@ function upsertBusinessProfile(db, { userId, projectName, industry, needs }) {
   return { ok: true }
 }
 
+function getStudentProfile(db,user_id){
+  const row = db
+  .prepare( `
+    SELECT major, classification, bio
+    FROM student_profiles
+    WHERE user_id = ?   
+    `)
+    .get(user_id)
+    return(row)
+}
+
+function getBusinessProfile(db, user_id){
+  const row = db
+  .prepare(`
+   SELECT  project_name, industry, needs
+    FROM business_profiles
+    WHERE user_id = ?
+    `)
+    .get(user_id)
+    return(row)
+}
+
 module.exports = {
   upsertStudentProfile,
   upsertBusinessProfile,
+  getStudentProfile,
+  getBusinessProfile,
 }

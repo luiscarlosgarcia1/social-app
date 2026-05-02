@@ -1,4 +1,5 @@
 const { preparePasswordForStorage, comparePassword } = require('./password')
+const { getStudentProfile, getBusinessProfile } = require('./profile-repository')
 const {
   createUser,
   findUserWithPasswordByEmail,
@@ -36,10 +37,17 @@ function loginUser(db, payload) {
   if (!comparePassword(validation.value.password, account.password)) {
     return { ok: false, code: 'INVALID_CREDENTIALS' }
   }
+  let profile 
+  if (account.user.role == 'student'){
+     profile = (getStudentProfile(db , account.user.id))
+  }
+  else {
+     profile = (getBusinessProfile(db , account.user.id))
+  }
 
   return {
     ok: true,
-    user: account.user,
+    user: { ...account.user, ...profile}, 
   }
 }
 

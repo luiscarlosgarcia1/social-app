@@ -18,7 +18,16 @@ function Login() {
             const data = await response.json()
             if (data.ok) {
                 localStorage.setItem('user', JSON.stringify(data.user))
-                window.location.href = data.user.role === 'business' ? '/BusinessProfile' : '/StudentProfile'
+                //window.location.href = data.user.role === 'business' ? '/BusinessProfile' : '/StudentProfile'
+                if ( data.user.role == 'student' && !data.user.major){
+                    window.location.href = '/StudentProfile'
+                }
+                else if (data.user.role == 'business' && !data.user.project_name){
+                    window.location.href = '/BusinessProfile'
+                }
+                else {
+                     window.location.href = '/home'
+                }
             } else if (data.code === 'INVALID_CREDENTIALS') {
                 setError('Invalid email or password.')
             } else {
