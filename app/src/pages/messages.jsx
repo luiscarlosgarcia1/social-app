@@ -1,16 +1,123 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useLocation } from 'react-router-dom';
 import Sidebar from '../components/SidebarH';
 
-const hardcodedConversations = [
-    { id: 1, fullName: 'Carlos Rivera', lastMessage: 'Hey! I saw your profile and I think you would be a great fit.', time: '2m ago' },
-    { id: 2, fullName: 'Sofia Mendez', lastMessage: 'Are you available for a quick call this week?', time: '1h ago' },
-    { id: 3, fullName: 'James Tran', lastMessage: 'Thanks for connecting! Let me know your availability.', time: '3h ago' },
-    { id: 4, fullName: 'Mia Lopez', lastMessage: 'Looking forward to working together!', time: '1d ago' },
-];
+const API = 'http://localhost:3000';
+const POLL_INTERVAL = 3000; // refresh messages every 3 seconds
 
 export default function Messages() {
-    const user = JSON.parse(localStorage.getItem('user'));
-    const [selected, setSelected] = useState(hardcodedConversations[0]);
+    const location = useLocation();
+    const [user, setUser] = React.useState(null);
+    const [matches, setMatches] = React.useState([]);
+    const [selectedMatch, setSelectedMatch] = React.useState(null);
+    const [messages, setMessages] = React.useState([]);
+    const [input, setInput] = React.useState('');
+    const [loading, setLoading] = React.useState(true);
+    const bottomRef = React.useRef(null);
+    const pollRef = React.useRef(null);
+
+    // Load user and matches on mount
+    React.useEffect(() => {
+        const savedUser = localStorage.getItem('user');
+        if (savedUser) {
+            try {
+                const parsed = JSON.parse(savedUser);
+                setUser(parsed);
+                fetchMatches(parsed.id);
+            } catch (e) {
+                console.error('Error loading user', e);
+            }
+        }
+    }, []);
+
+    // If navigated from Matches page with a matchId, auto-select it
+    React.useEffect(() => {
+        if (location.state?.matchId && matches.length > 0) {
+            const found = matches.find(m => m.matchId === location.state.matchId);
+            if (found) selectMatch(found);
+        }
+    }, [matches, location.state]);
+
+    // Auto-scroll to bottom when messages change
+    React.useEffect(() => {
+        bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages]);
+
+    // Poll for new messages while a conversation is open
+    React.useEffect(() => {
+        if (selectedMatch) {
+            pollRef.current = setInterval(() => {
+                fetchMessages(selectedMatch.matchId);
+            }, POLL_INTERVAL);
+        }
+        return () => clearInterval(pollRef.current);
+    }, [selectedMatch]);
+
+    async function fetchMatches(userId) {
+        setLoading(true);
+        try {
+            const res = await fetch(`${API}/matches/${userId}`);
+            const data = await res.json();
+            if (data.ok) setMatches(data.matches);
+        } catch (e) {
+            console.error('Failed to fetch matches', e);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    async function fetchMessages(matchId) {
+        try {
+            const res = await fetch(`${API}/messages/${matchId}`);
+            const data = await res.json();
+            if (data.ok) setMessages(data.messages);
+        } catch (e) {
+            console.error('Failed to fetch messages', e);
+        }
+    }
+
+    function selectMatch(match) {
+        setSelectedMatch(match);
+        setMessages([]);
+        fetchMessages(match.matchId);
+    }
+
+    async function handleSend() {
+        if (!input.trim() || !selectedMatch || !user) return;
+        const content = input.trim();
+        setInput('');
+
+        try {
+            const res = await fetch(`${API}/messages`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    matchId: selectedMatch.matchId,
+                    senderId: user.id,
+                    content,
+                }),
+            });
+            const data = await res.json();
+            if (data.ok) fetchMessages(selectedMatch.matchId);
+        } catch (e) {
+            console.error('Failed to send message', e);
+        }
+    }
+
+    function handleKeyDown(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSend();
+        }
+    }
+
+    if (!user || loading) {
+        return (
+            <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f9f9f9', alignItems: 'center', justifyContent: 'center' }}>
+                <p style={{ color: '#888' }}>Loading...</p>
+            </div>
+        );
+    }
 
     return (
         <div style={{ display: 'flex' }}>
@@ -22,90 +129,123 @@ export default function Messages() {
                 {/* Conversation List */}
                 <div style={{
                     width: '300px', borderRight: '1px solid #e0e0e0',
-                    backgroundColor: '#fff', padding: '24px 0'
+                    backgroundColor: '#fff', padding: '24px 0', flexShrink: 0
                 }}>
                     <h2 style={{ padding: '0 20px', color: '#F05023', marginBottom: '16px', fontSize: '1.3rem' }}>
                         Messages
                     </h2>
-                    {hardcodedConversations.map(convo => (
-                        <div
-                            key={convo.id}
-                            onClick={() => setSelected(convo)}
-                            style={{
-                                padding: '16px 20px', cursor: 'pointer',
-                                backgroundColor: selected.id === convo.id ? '#fff5f2' : 'transparent',
-                                borderLeft: selected.id === convo.id ? '3px solid #F05023' : '3px solid transparent',
-                                transition: 'all 0.15s ease'
-                            }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                <div style={{
-                                    width: '40px', height: '40px', borderRadius: '50%',
-                                    backgroundColor: '#F05023', color: '#fff',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    fontWeight: 'bold', flexShrink: 0
-                                }}>
-                                    {convo.fullName.charAt(0)}
-                                </div>
-                                <div style={{ overflow: 'hidden' }}>
-                                    <p style={{ margin: 0, fontWeight: '600', fontSize: '0.9rem', color: '#1a1a1a' }}>
-                                        {convo.fullName}
-                                    </p>
-                                    <p style={{
-                                        margin: 0, fontSize: '0.78rem', color: '#888',
-                                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
+
+                    {matches.length === 0 ? (
+                        <p style={{ padding: '0 20px', color: '#aaa', fontSize: '0.85rem' }}>
+                            No matches yet.
+                        </p>
+                    ) : (
+                        matches.map(match => (
+                            <div
+                                key={match.matchId}
+                                onClick={() => selectMatch(match)}
+                                style={{
+                                    padding: '16px 20px', cursor: 'pointer',
+                                    backgroundColor: selectedMatch?.matchId === match.matchId ? '#fff5f2' : 'transparent',
+                                    borderLeft: selectedMatch?.matchId === match.matchId ? '3px solid #F05023' : '3px solid transparent',
+                                    transition: 'all 0.15s ease'
+                                }}
+                            >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <div style={{
+                                        width: '40px', height: '40px', borderRadius: '50%',
+                                        backgroundColor: '#F05023', color: '#fff',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        fontWeight: 'bold', flexShrink: 0
                                     }}>
-                                        {convo.lastMessage}
-                                    </p>
+                                        {match.fullName.charAt(0)}
+                                    </div>
+                                    <div>
+                                        <p style={{ margin: 0, fontWeight: '600', fontSize: '0.9rem', color: '#1a1a1a' }}>
+                                            {match.fullName}
+                                        </p>
+                                        <p style={{ margin: 0, fontSize: '0.75rem', color: '#888' }}>
+                                            {match.role === 'student' ? match.major : match.projectName}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        ))
+                    )}
                 </div>
 
                 {/* Chat Area */}
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '32px' }}>
-                    <h2 style={{ margin: '0 0 24px', color: '#1a1a1a', fontSize: '1.2rem' }}>
-                        {selected.fullName}
-                    </h2>
-                    <div style={{
-                        flex: 1, backgroundColor: '#fff', borderRadius: '12px',
-                        padding: '24px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-                        display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: '12px'
-                    }}>
-                        <div style={{
-                            alignSelf: 'flex-start', backgroundColor: '#f0f0f0',
-                            padding: '12px 16px', borderRadius: '12px 12px 12px 0',
-                            maxWidth: '60%', fontSize: '0.9rem', color: '#1a1a1a'
-                        }}>
-                            {selected.lastMessage}
+                    {!selectedMatch ? (
+                        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>
+                            <p>Select a match to start chatting.</p>
                         </div>
-                        <div style={{
-                            alignSelf: 'flex-end', backgroundColor: '#F05023',
-                            padding: '12px 16px', borderRadius: '12px 12px 0 12px',
-                            maxWidth: '60%', fontSize: '0.9rem', color: '#fff'
-                        }}>
-                            Thanks for reaching out! Let's connect.
-                        </div>
-                    </div>
+                    ) : (
+                        <>
+                            <h2 style={{ margin: '0 0 24px', color: '#1a1a1a', fontSize: '1.2rem' }}>
+                                {selectedMatch.fullName}
+                            </h2>
 
-                    {/* Input */}
-                    <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
-                        <input
-                            type="text"
-                            placeholder="Type a message..."
-                            style={{
-                                flex: 1, padding: '12px 16px', borderRadius: '8px',
-                                border: '1px solid #e0e0e0', fontSize: '0.9rem', outline: 'none'
-                            }}
-                        />
-                        <button style={{
-                            padding: '12px 24px', backgroundColor: '#F05023',
-                            color: '#fff', border: 'none', borderRadius: '8px',
-                            cursor: 'pointer', fontWeight: '600'
-                        }}>
-                            Send
-                        </button>
-                    </div>
+                            {/* Messages */}
+                            <div style={{
+                                flex: 1, backgroundColor: '#fff', borderRadius: '12px',
+                                padding: '24px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+                                overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px',
+                                minHeight: '400px', maxHeight: '60vh'
+                            }}>
+                                {messages.length === 0 ? (
+                                    <p style={{ color: '#aaa', textAlign: 'center', marginTop: 'auto' }}>
+                                        No messages yet. Say hi! 👋
+                                    </p>
+                                ) : (
+                                    messages.map(msg => {
+                                        const isMe = msg.sender_id === user.id;
+                                        return (
+                                            <div
+                                                key={msg.id}
+                                                style={{
+                                                    alignSelf: isMe ? 'flex-end' : 'flex-start',
+                                                    backgroundColor: isMe ? '#F05023' : '#f0f0f0',
+                                                    color: isMe ? '#fff' : '#1a1a1a',
+                                                    padding: '12px 16px',
+                                                    borderRadius: isMe ? '12px 12px 0 12px' : '12px 12px 12px 0',
+                                                    maxWidth: '60%', fontSize: '0.9rem', lineHeight: '1.4'
+                                                }}
+                                            >
+                                                {msg.content}
+                                            </div>
+                                        );
+                                    })
+                                )}
+                                <div ref={bottomRef} />
+                            </div>
+
+                            {/* Input */}
+                            <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
+                                <input
+                                    type="text"
+                                    value={input}
+                                    onChange={e => setInput(e.target.value)}
+                                    onKeyDown={handleKeyDown}
+                                    placeholder="Type a message..."
+                                    style={{
+                                        flex: 1, padding: '12px 16px', borderRadius: '8px',
+                                        border: '1px solid #e0e0e0', fontSize: '0.9rem', outline: 'none'
+                                    }}
+                                />
+                                <button
+                                    onClick={handleSend}
+                                    style={{
+                                        padding: '12px 24px', backgroundColor: '#F05023',
+                                        color: '#fff', border: 'none', borderRadius: '8px',
+                                        cursor: 'pointer', fontWeight: '600'
+                                    }}
+                                >
+                                    Send
+                                </button>
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

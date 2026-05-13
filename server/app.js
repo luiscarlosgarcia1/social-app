@@ -1,4 +1,5 @@
 const express = require('express')
+const { getDiscoverProfiles, recordSwipe, getMatches, getMessages, sendMessage } = require('./match-repository')
 const { loginUser, registerUser } = require('./auth-service')
 const { upsertStudentProfile, upsertBusinessProfile } = require('./profile-repository')
 const { initializeDatabase, resolveDbPath } = require('./db')
@@ -23,6 +24,45 @@ function createApp(options = {}) {
 
     next()
   })
+
+  app.get('/discover/:userId', (req, res) => {
+  const userId = Number(req.params.userId)
+  if (!userId) return res.status(400).json({ ok: false, code: 'VALIDATION_ERROR' })
+  const profiles = getDiscoverProfiles(db, userId)
+  return res.status(200).json({ ok: true, profiles })
+})
+
+app.post('/swipe', (req, res) => {
+  const { swiperId, swipedId, direction } = req.body
+  if (!swiperId || !swipedId || !['like', 'pass'].includes(direction)) {
+    return res.status(400).json({ ok: false, code: 'VALIDATION_ERROR' })
+  }
+  const result = recordSwipe(db, swiperId, swipedId, direction)
+  return res.status(200).json({ ok: true, ...result })
+})
+
+app.get('/matches/:userId', (req, res) => {
+  const userId = Number(req.params.userId)
+  if (!userId) return res.status(400).json({ ok: false, code: 'VALIDATION_ERROR' })
+  const matches = getMatches(db, userId)
+  return res.status(200).json({ ok: true, matches })
+})
+
+app.get('/messages/:matchId', (req, res) => {
+  const matchId = Number(req.params.matchId)
+  if (!matchId) return res.status(400).json({ ok: false, code: 'VALIDATION_ERROR' })
+  const msgs = getMessages(db, matchId)
+  return res.status(200).json({ ok: true, messages: msgs })
+})
+
+app.post('/messages', (req, res) => {
+  const { matchId, senderId, content } = req.body
+  if (!matchId || !senderId || !content?.trim()) {
+    return res.status(400).json({ ok: false, code: 'VALIDATION_ERROR' })
+  }
+  const msg = sendMessage(db, matchId, senderId, content.trim())
+  return res.status(201).json({ ok: true, message: msg })
+})
 
   app.get('/', (_req, res) => {
     res.status(200).json({ message: 'Server running' })
@@ -97,6 +137,8 @@ function createApp(options = {}) {
 
   return app
 }
+
+
 
 module.exports = {
   createApp,
