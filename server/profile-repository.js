@@ -19,7 +19,12 @@ function upsertBusinessProfile(db, { userId, projectName, industry, needs }) {
       project_name = excluded.project_name,
       industry = excluded.industry,
       needs = excluded.needs
-  `).run({ userId, projectName, industry, needs: needs || null })
+  `).run({
+    userId,
+    projectName: projectName?.trim() || '',
+    industry: industry?.trim() || '',
+    needs: needs?.trim() || null,
+  })
 
   return { ok: true }
 }

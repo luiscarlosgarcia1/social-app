@@ -13,7 +13,7 @@ Functional requirements describe what the system must do.
 5. The system shall allow a student user to create or update a student profile.
 6. The system shall allow a business user to create or update a business profile.
 7. The system shall store student profile data including major, classification, and bio.
-8. The system shall store business profile data including project name, industry, and needs.
+8. The system shall store business profile data including a required industry field and optional project name and needs fields.
 9. The system shall route users without a completed profile to the correct profile setup page after login.
 10. The system shall show a discover feed of opposite-role users.
 11. The system shall allow a user to swipe right to like another profile.
@@ -36,7 +36,7 @@ Non-functional requirements describe how the system should perform or what const
 3. The backend shall expose JSON-based HTTP endpoints using Express.
 4. The frontend shall run as a React application built with Vite.
 5. The system shall support separate frontend and backend local development environments.
-6. The backend shall validate required input fields for registration, login, swipes, messages, and profile creation.
+6. The backend shall validate required input fields for registration, login, swipes, messages, and profile creation, while allowing the business profile project name and needs fields to be left blank.
 7. The backend shall return appropriate HTTP status codes for success, validation failures, authentication failures, and duplicate registrations.
 8. The system shall persist user, profile, swipe, match, and message data between sessions.
 9. The application shall maintain a consistent role-based flow between student and business users.

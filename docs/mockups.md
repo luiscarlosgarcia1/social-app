@@ -60,10 +60,12 @@ These are low-fidelity wireframes represented in plain Markdown using ASCII. Mar
 +--------------------------------------------------+
 |             Business Partner Profile             |
 |      Tell students about your ideas/projects     |
+|   Project name and description are optional      |
+|              Industry is required                |
 |                                                  |
-|  [ Project Name                               ]  |
-|  [ Industry                                   ]  |
-|  [ Needs / idea description                   ]  |
+|  [ Project Name (optional)                    ]  |
+|  [ Industry                                  ]  |
+|  [ Needs / idea description (optional)        ]  |
 |  [                                            ]  |
 |  [                                            ]  |
 |                                                  |

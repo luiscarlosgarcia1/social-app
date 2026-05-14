@@ -41,7 +41,7 @@ function StudentProfile() {
                     </div>
 
                     <div className="input-group">
-                        <textarea name="bio" placeholder="Tell us about your skills and project interests..." rows="4" style={{width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ddd'}}></textarea>
+                        <textarea name="bio" placeholder="Tell us about your skills and project interests... (optional)" rows="4" style={{width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ddd'}}></textarea>
                     </div>
 
                     <button type="submit" className="login-btn">Save Profile</button>

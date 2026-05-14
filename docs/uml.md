@@ -79,9 +79,9 @@ classDiagram
     class BusinessProfile {
       +id: integer
       +userId: integer
-      +projectName: string
-      +industry: string
-      +needs: string
+      +projectName: string optional
+      +industry: string required
+      +needs: string optional
       +createdAt: datetime
     }
 

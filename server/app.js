@@ -113,7 +113,7 @@ app.post('/messages', (req, res) => {
 
   app.post('/profile/business', (req, res) => {
     const { userId, projectName, industry, needs } = req.body
-    if (!userId || !projectName || !industry) {
+    if (!userId || !industry?.trim()) {
       return res.status(400).json({ ok: false, code: 'VALIDATION_ERROR' })
     }
     const result = upsertBusinessProfile(db, { userId, projectName, industry, needs })
