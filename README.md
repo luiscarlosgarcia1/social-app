@@ -1,4 +1,7 @@
 # social-app
+next step for senior project 
+* ai for the matching algo
+* ai as a chat box that can help with intervies 
 
 ## Collaboration
 
@@ -177,3 +180,4 @@ Helpful backend files:
 8. As a user, I want to swipe left on a profile I'm not interested in so that I can move on to the next one.
 9. As an inventor, I want to create a profile with my project idea, the type of builders I need, and my background so that relevant students can find and consider working with me.
 10. As a matched user, I want to send direct messages to my match so that we can discuss the project in more detail.
+
